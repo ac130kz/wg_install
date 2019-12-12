@@ -28,7 +28,7 @@ install(){
     apt upgrade -y
     apt install ifupdown -y
     apt install wireguard resolvconf -y
-    apt --purge autoremove
+    apt --purge autoremove -y
     
     # keys and settings
     cd /etc/wireguard
