@@ -20,13 +20,15 @@ install(){
     echo "net.ipv4.ip_forward=1" > /etc/sysctl.d/10-ipv4-forward.conf
     echo 1 > /proc/sys/net/ipv4/ip_forward
     
-    # downloading required sw and cleaning up the garbage
+    # requirements and garbage cleanup
     version=$(cat /etc/os-release | awk -F '[".]' '$1=="VERSION="{print $2}')
     apt purge snapd unattended-upgrades -y
     add-apt-repository ppa:wireguard/wireguard
     apt update
     apt upgrade -y
+    apt install ifupdown -y
     apt install wireguard resolvconf -y
+    apt --purge autoremove
     
     # keys and settings
     cd /etc/wireguard
