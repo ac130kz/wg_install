@@ -12,15 +12,18 @@ function yellow(){
 
 install(){
     # user input settings
-    read -p "Port: " -e -i 443 port
-    read -p "MTU (max is 1420, recommended for udp2raw 1200): " -e -i 1420 mtu
+    read -p "Port (443 may be inspected, test others): " -e -i 443 port
+    read -p "MTU (recommended for udp2raw 1300, max is 1420): " -e -i 1300 mtu
     dns="1.1.1.1"
+    read -p "Password: " -e -i 443 port
     
     # forwarding rules
     echo "net.ipv4.ip_forward=1" > /etc/sysctl.d/10-ipv4-forward.conf
     echo 1 > /proc/sys/net/ipv4/ip_forward
     
     # requirements and garbage cleanup
+    echo "Downloading udp2raw..."
+    wget https://github.com/wangyu-/udp2raw-tunnel/releases/download/20190716.test.0/udp2raw_binaries.tar.gz && tar xvf udp2raw_binaries.tar.gz
     version=$(cat /etc/os-release | awk -F '[".]' '$1=="VERSION="{print $2}')
     apt purge snapd unattended-upgrades -y
     add-apt-repository ppa:wireguard/wireguard
@@ -77,12 +80,19 @@ EOF
     green "Running on UDP: DNS $dns, MTU $mtu"
     green "Now download /etc/wireguard/client.conf"
     green "It's recommended to reboot in order to finish the updates"
+    
+# server
+./udp2raw_amd64 -s -l 0.0.0.0:443 -r 127.0.0.1:7777 -a -k "password" --raw-mode faketcp --cipher-mode none --fix-gro
+
+# client
+./udp2raw_mp.exe -c -l 0.0.0.0:3333 -r $serverip:443 -k "password" --raw-mode easy-faketcp --cipher-mode none --fix-gro
+
 }
 
 start_menu(){
     clear
     green " ===================================="
-    green " Wireguard one-click setup          "
+    green " Wireguard + udp2raw one-click setup          "
     green " Requires： Ubuntu >= 18.04 + root access  "
     green " About： based on TunSafe one-click setup by atrandys "
     green "https://github.com/atrandys/tunsafe"
