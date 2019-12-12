@@ -16,6 +16,10 @@ install(){
     read -p "MTU (max is 1420, recommended for udp2raw 1200): " -e -i 1420 mtu
     dns="1.1.1.1"
     
+	# forwarding rules
+	echo "net.ipv4.ip_forward=1" > /etc/sysctl.d/10-ipv4-forward.conf
+	echo 1 > /proc/sys/net/ipv4/ip_forward
+    
     # downloading required sw and cleaning up the garbage
     version=$(cat /etc/os-release | awk -F '[".]' '$1=="VERSION="{print $2}')
     add-apt-repository ppa:wireguard/wireguard
