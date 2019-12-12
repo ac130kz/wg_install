@@ -22,10 +22,10 @@ install(){
     
     # downloading required sw and cleaning up the garbage
     version=$(cat /etc/os-release | awk -F '[".]' '$1=="VERSION="{print $2}')
+    apt purge snapd unattended-upgrades -y
     add-apt-repository ppa:wireguard/wireguard
     apt update
     apt upgrade -y
-    apt purge snapd unattended-upgrades -y
     apt install wireguard resolvconf -y
     
     # keys and settings
