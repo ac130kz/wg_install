@@ -14,22 +14,28 @@ install(){
     # user input settings
     read -p "Port: " -e -i 443 port
     read -p "MTU (max is 1420, recommended for udp2raw 1200): " -e -i 1420 mtu
+    read -p "Purge snapd and unattended-upgrades with their dependencies (N/y): " -e -i "n" purge
+    case ${purge:0:1} in
+        y|Y )
+            # garbage cleanup
+            apt purge snapd unattended-upgrades -y
+            apt --purge autoremove -y
+        ;;
+        * )
+        ;;
+    esac
     dns="1.1.1.1"
     
     # forwarding rules
     echo "net.ipv4.ip_forward=1" > /etc/sysctl.d/10-ipv4-forward.conf
     echo 1 > /proc/sys/net/ipv4/ip_forward
     
-    # requirements and garbage cleanup
+    # requirements
     version=$(cat /etc/os-release | awk -F '[".]' '$1=="VERSION="{print $2}')
-    apt purge snapd unattended-upgrades -y
-    add-apt-repository ppa:wireguard/wireguard
     apt update
     apt upgrade -y
-    apt install ifupdown -y
-    apt install wireguard resolvconf -y
-    apt --purge autoremove -y
-    
+    apt install ifupdown wireguard resolvconf -y
+
     # keys and settings
     cd /etc/wireguard
     umask 077
