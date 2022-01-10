@@ -12,7 +12,7 @@ function yellow(){
 
 install(){
     # user input settings
-    read -p "Choose your main port (80, 443, 8443, 3785 are included by default, select among them): " -e -i 3785 port
+    read -p "Choose your main port (80, 179, 443, 3784, 4784, 8443 are included by default, select among them): " -e -i 3785 port
     read -p "MTU (max is 1420, recommended for udp2raw 1200): " -e -i 1420 mtu
     read -p "Purge snapd and unattended-upgrades with their dependencies (N/y): " -e -i "n" purge
     case ${purge:0:1} in
@@ -52,8 +52,8 @@ cat > /etc/wireguard/wg0.conf <<-EOF
 [Interface]
 PrivateKey = $s1
 Address = 10.0.0.1/24
-PostUp   = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o $eth -j MASQUERADE; iptables -t nat -A PREROUTING -i $eth -d $serverip -p udp -m multiport --dports 80,443,8443 -j REDIRECT --to-ports $port; iptables -A PREROUTING -t nat -i $eth -p udp --dport 53 -j DNAT --to-destination $dns:53
-PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o $eth -j MASQUERADE; iptables -t nat -D PREROUTING -i $eth -d $serverip -p udp -m multiport --dports 80,443,8443 -j REDIRECT --to-ports $port; iptables -D PREROUTING -t nat -i $eth -p udp --dport 53 -j DNAT --to-destination $dns:53
+PostUp   = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -A FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o $eth -j MASQUERADE; iptables -t nat -A PREROUTING -i $eth -d $serverip -p udp -m multiport --dports 80,179,443,3784,4784,8443 -j REDIRECT --to-ports $port; iptables -A PREROUTING -t nat -i $eth -p udp --dport 53 -j DNAT --to-destination $dns:53
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o $eth -j MASQUERADE; iptables -t nat -D PREROUTING -i $eth -d $serverip -p udp -m multiport --dports 80,179,443,3784,4784,8443 -j REDIRECT --to-ports $port; iptables -D PREROUTING -t nat -i $eth -p udp --dport 53 -j DNAT --to-destination $dns:53
 ListenPort = $port
 MTU = $mtu
 
