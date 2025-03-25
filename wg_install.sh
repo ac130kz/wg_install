@@ -13,7 +13,7 @@ function yellow(){
 install(){
     # user input settings
     read -p "Choose your main port (80, 179, 443, 3784, 4784, 8443 are included by default, select among them): " -e -i 3785 port
-    read -p "MTU (max is 1420, recommended for udp2raw 1200): " -e -i 1420 mtu
+    read -p "MTU (default is 1420, Ethernet standard size is 1500, minus IP header, then max is 1420 for ipv6, 1440 for ipv4, recommended for udp2raw 1200): " -e -i 1440 mtu
     read -p "Purge snapd and unattended-upgrades with their dependencies (N/y): " -e -i "n" purge
     case ${purge:0:1} in
         y|Y )
