@@ -31,10 +31,9 @@ install(){
     echo 1 > /proc/sys/net/ipv4/ip_forward
     
     # requirements
-    version=$(cat /etc/os-release | awk -F '[".]' '$1=="VERSION="{print $2}')
     apt update
     apt upgrade -y
-    apt install ifupdown wireguard resolvconf -y
+    apt install ifupdown wireguard-tools -y
 
     # keys and settings
     cd /etc/wireguard
@@ -88,7 +87,7 @@ start_menu(){
     clear
     green " ===================================="
     green " Wireguard one-click setup          "
-    green " Requires： Ubuntu >= 18.04 + root access  "
+    green " Requires： Ubuntu >= 24.04 + root access  "
     green " About： based on TunSafe one-click setup by atrandys "
     green "https://github.com/atrandys/tunsafe"
     green " ===================================="
